@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:moving_app/Utils/constants.dart';
+import 'package:sliding_up_panel/sliding_up_panel.dart';
 
 class AddressesScreen extends StatefulWidget {
   const AddressesScreen({super.key});
@@ -65,6 +66,19 @@ class _AddressesScreenState extends State<AddressesScreen> {
           preferredSize: Size.fromHeight(85),
         ),
       ),
+      body: Stack(
+        children: [
+          Center(
+            child: Text("This is the Widget behind the sliding panel"),
+          ),
+          SlidingUpPanel(
+            panel: Center(
+              child: Text("This is the sliding Widget"),
+            ),
+          ),
+        ],
+      ),
+      floatingActionButton: FloatingActionButton(onPressed: () {}),
     );
   }
 }
