@@ -28,6 +28,7 @@ class Urls {
   ///Location Urls
   static const String LOCATION_AUTOCOMPLETE =
       '$LOCATION_BASE_API/autocomplete.php';
+  static const String LOCATION_REVERSE = '$LOCATION_BASE_API/reverse.php';
 }
 
 const String locationKey = 'pk.0b821f869258d4129c196400ab4927f0';

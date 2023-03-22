@@ -27,6 +27,12 @@ dependencies:
   fancy_bar: ^2.0.0
   banner_carousel: ^1.2.1
   sliding_up_panel: ^2.0.0+1
+  google_maps_flutter: ^2.2.1
+  geolocator: ^9.0.2
+  flutter_typeahead: ^4.3.7
+  bloc_concurrency: ^0.2.1
+  async: ^2.10.0
+  flutter_dash: ^1.0.0
 
 dev_dependencies:
   flutter_test:
