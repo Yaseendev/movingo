@@ -1,9 +1,9 @@
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_dash/flutter_dash.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:moving_app/Order/data/models/order_address.dart';
 import 'package:moving_app/Shared/Location/bloc/location_bloc.dart';
 import 'package:moving_app/Shared/Location/data/repositories/location_repository.dart';
 import 'package:moving_app/Utils/constants.dart';
@@ -42,6 +42,24 @@ class _AddressesScreenState extends State<AddressesScreen> {
   final PanelController panelController = PanelController();
   final PageController pageController = PageController();
   bool resizeToAvoid = true;
+  OrderAddress? pickupAddress;
+  OrderAddress? dropoffAddress;
+  final GlobalKey<FormState> pickupFormKey = GlobalKey<FormState>();
+  final GlobalKey<FormState> dropoffFormKey = GlobalKey<FormState>();
+  final TextEditingController pickupNameCont = TextEditingController(),
+                              pickupAreaCont = TextEditingController(),
+                              pickupStreetCont = TextEditingController(),
+                              pickupBuildingCont = TextEditingController(),
+                              pickupFloorCont = TextEditingController(),
+                              pickupOtherCont = TextEditingController(),
+                              pickupPhoneCont = TextEditingController(),
+                              dropoffNameCont = TextEditingController(),
+                              dropoffAreaCont = TextEditingController(),
+                              dropoffStreetCont = TextEditingController(),
+                              dropoffBuildingCont = TextEditingController(),
+                              dropoffFloorCont = TextEditingController(),
+                              dropoffOtherCont = TextEditingController(),
+                              dropoffPhoneCont = TextEditingController();
 
   @override
   void initState() {
@@ -136,9 +154,14 @@ class _AddressesScreenState extends State<AddressesScreen> {
                       onSubmitted: (value) {
                         _focus2.requestFocus();
                       },
-                      onTap: () => setState(() {
-                        isOnPickup = true;
-                      }),
+                      onTap: () {
+                        setState(() {
+                          isOnPickup = true;
+                        });
+                        pageController.animateToPage(0,
+                            duration: Duration(milliseconds: 400),
+                            curve: Curves.easeInCubic);
+                      },
                     ),
                     suggestionsCallback: (pattern) async {
                       print(pattern);
@@ -209,10 +232,12 @@ class _AddressesScreenState extends State<AddressesScreen> {
                         setState(() {
                           isOnPickup = false;
                         });
+
                         pageController.animateToPage(1,
                             duration: Duration(milliseconds: 400),
                             curve: Curves.easeInCubic);
                       },
+                      enabled: pickupAddress != null,
                       controller: textController2,
                       focusNode: _focus2,
                       style: TextStyle(fontSize: 14),
@@ -355,6 +380,9 @@ class _AddressesScreenState extends State<AddressesScreen> {
                 },
                 scrollController: sc,
                 pageController: pageController,
+                pickupFormKey: pickupFormKey,
+                dropoffFormKey: dropoffFormKey,
+                pickupAddress: pickupAddress,
               ),
               borderRadius:
                   const BorderRadius.vertical(top: Radius.circular(12)),
@@ -388,6 +416,7 @@ class _AddressesScreenState extends State<AddressesScreen> {
               right: 8,
               bottom: _fabHeight,
               child: FloatingActionButton.extended(
+                heroTag: Object,
                 label: Icon(
                   Icons.arrow_forward_rounded,
                   color: AppColors.PRIMARY_COLOR,
@@ -399,7 +428,23 @@ class _AddressesScreenState extends State<AddressesScreen> {
                   ),
                 ),
                 onPressed: () {
-                  Navigator.of(context).pop();
+                  setState(() {
+                    pickupAddress = OrderAddress(
+                        position: initPos,
+                        name: 'test',
+                        area: 'a',
+                        street: 'ad',
+                        building: 'buildin',
+                        floor: 'floor',
+                        phoneNumber: 'phoneNumber');
+                  });
+                  // if (pickupFormKey.currentState!.validate()) {
+                  //   pageController.animateToPage(1,
+                  //       duration: Duration(milliseconds: 400),
+                  //       curve: Curves.easeInCubic);
+                  // } else {
+                  //   if (panelController.isPanelClosed) panelController.open();
+                  // }
                 },
                 backgroundColor: AppColors.BG_COLOR,
               ),
