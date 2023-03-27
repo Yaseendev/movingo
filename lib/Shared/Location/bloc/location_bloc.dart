@@ -1,4 +1,3 @@
-import 'package:async/async.dart';
 import 'package:bloc/bloc.dart';
 import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';

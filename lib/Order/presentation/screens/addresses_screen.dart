@@ -3,6 +3,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_dash/flutter_dash.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:moving_app/Order/blocs/address_form_bloc/address_form_bloc.dart';
+import 'package:moving_app/Order/blocs/address_form_cubit/address_form_cubit.dart';
 import 'package:moving_app/Order/data/models/order_address.dart';
 import 'package:moving_app/Shared/Location/bloc/location_bloc.dart';
 import 'package:moving_app/Shared/Location/data/repositories/location_repository.dart';
@@ -46,20 +48,8 @@ class _AddressesScreenState extends State<AddressesScreen> {
   OrderAddress? dropoffAddress;
   final GlobalKey<FormState> pickupFormKey = GlobalKey<FormState>();
   final GlobalKey<FormState> dropoffFormKey = GlobalKey<FormState>();
-  final TextEditingController pickupNameCont = TextEditingController(),
-                              pickupAreaCont = TextEditingController(),
-                              pickupStreetCont = TextEditingController(),
-                              pickupBuildingCont = TextEditingController(),
-                              pickupFloorCont = TextEditingController(),
-                              pickupOtherCont = TextEditingController(),
-                              pickupPhoneCont = TextEditingController(),
-                              dropoffNameCont = TextEditingController(),
-                              dropoffAreaCont = TextEditingController(),
-                              dropoffStreetCont = TextEditingController(),
-                              dropoffBuildingCont = TextEditingController(),
-                              dropoffFloorCont = TextEditingController(),
-                              dropoffOtherCont = TextEditingController(),
-                              dropoffPhoneCont = TextEditingController();
+
+  final AddressFormBloc formBloc = AddressFormBloc();
 
   @override
   void initState() {
@@ -99,10 +89,18 @@ class _AddressesScreenState extends State<AddressesScreen> {
                     ));
                     setState(() => textController1.text =
                         state.currentLocation.displayName);
+                    formBloc.add(FetchAddress(
+                        area: state.currentLocation.suburb,
+                        street: state.currentLocation.road,
+                        isPickup: true));
                     suggestionController1.close();
                   } else if (state is LocationFetched) {
                     setState(() => textController1.text =
                         state.currentLocation.displayName);
+                    formBloc.add(FetchAddress(
+                        area: state.currentLocation.suburb,
+                        street: state.currentLocation.road,
+                        isPickup: true));
                     suggestionController1.close();
                   }
                 },
@@ -218,10 +216,18 @@ class _AddressesScreenState extends State<AddressesScreen> {
                     ));
                     setState(() => textController2.text =
                         state.currentLocation.displayName);
+                    formBloc.add(FetchAddress(
+                        area: state.currentLocation.suburb,
+                        street: state.currentLocation.road,
+                        isPickup: false));
                     suggestionController2.close();
                   } else if (state is LocationFetched) {
                     setState(() => textController2.text =
                         state.currentLocation.displayName);
+                    formBloc.add(FetchAddress(
+                        area: state.currentLocation.suburb,
+                        street: state.currentLocation.road,
+                        isPickup: false));
                     suggestionController2.close();
                   }
                 },
@@ -372,17 +378,20 @@ class _AddressesScreenState extends State<AddressesScreen> {
               // panel: Center(
               //   child: Text("This is the sliding Widget"),
               // ),
-              panelBuilder: (sc) => AddressesPanel(
-                onResize: (value) {
-                  setState(() {
-                    resizeToAvoid = value;
-                  });
-                },
-                scrollController: sc,
-                pageController: pageController,
-                pickupFormKey: pickupFormKey,
-                dropoffFormKey: dropoffFormKey,
-                pickupAddress: pickupAddress,
+              panelBuilder: (sc) => BlocProvider<AddressFormBloc>(
+                create: (context) => formBloc,
+                child: AddressesPanel(
+                  onResize: (value) {
+                    setState(() {
+                      resizeToAvoid = value;
+                    });
+                  },
+                  scrollController: sc,
+                  pageController: pageController,
+                  pickupFormKey: pickupFormKey,
+                  dropoffFormKey: dropoffFormKey,
+                  pickupAddress: pickupAddress,
+                ),
               ),
               borderRadius:
                   const BorderRadius.vertical(top: Radius.circular(12)),
@@ -405,7 +414,13 @@ class _AddressesScreenState extends State<AddressesScreen> {
                 icon: Icon(Icons.arrow_back_rounded),
                 label: Text('Back'),
                 onPressed: () {
-                  Navigator.of(context).pop();
+                  if (pageController.page?.toInt() == 0) {
+                    Navigator.of(context).pop();
+                  } else {
+                    pageController.animateToPage(0,
+                        duration: Duration(milliseconds: 400),
+                        curve: Curves.easeInCubic);
+                  }
                 },
                 backgroundColor: Colors.white,
               ),
@@ -428,23 +443,15 @@ class _AddressesScreenState extends State<AddressesScreen> {
                   ),
                 ),
                 onPressed: () {
-                  setState(() {
-                    pickupAddress = OrderAddress(
-                        position: initPos,
-                        name: 'test',
-                        area: 'a',
-                        street: 'ad',
-                        building: 'buildin',
-                        floor: 'floor',
-                        phoneNumber: 'phoneNumber');
-                  });
-                  // if (pickupFormKey.currentState!.validate()) {
-                  //   pageController.animateToPage(1,
-                  //       duration: Duration(milliseconds: 400),
-                  //       curve: Curves.easeInCubic);
-                  // } else {
-                  //   if (panelController.isPanelClosed) panelController.open();
-                  // }
+                  if (pageController.page?.toInt() == 0) {
+                    if (pickupFormKey.currentState!.validate()) {
+                      pageController.animateToPage(1,
+                          duration: Duration(milliseconds: 400),
+                          curve: Curves.easeInCubic);
+                    } else {
+                      if (panelController.isPanelClosed) panelController.open();
+                    }
+                  } else {}
                 },
                 backgroundColor: AppColors.BG_COLOR,
               ),
