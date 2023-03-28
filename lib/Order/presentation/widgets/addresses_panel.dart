@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:moving_app/Order/blocs/address_form_cubit/address_form_cubit.dart';
 import 'package:moving_app/Order/data/models/order_address.dart';
 
+import 'dropoff_address_form.dart';
 import 'pickup_address_form.dart';
 
 class AddressesPanel extends StatefulWidget {
@@ -68,17 +69,10 @@ class _AddressesPanelState extends State<AddressesPanel> {
                 onFocus: widget.onResize,
                 formKey: widget.pickupFormKey,
               ),
-              // PickupForm(
-              //   onFocus: widget.onResize,
-              //   formKey: widget.pickupFormKey,
-              // ),
-              Text('Page 2'),
-              //   Row(
-              //   mainAxisAlignment: MainAxisAlignment.center,
-              //   children: <Widget>[
-
-              //   ],
-              // ),
+              DropoffForm(
+                onFocus: widget.onResize,
+                formKey: widget.dropoffFormKey,
+              ),
             ],
           ),
         ),

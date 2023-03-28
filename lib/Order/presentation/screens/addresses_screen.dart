@@ -221,6 +221,7 @@ class _AddressesScreenState extends State<AddressesScreen> {
                         street: state.currentLocation.road,
                         isPickup: false));
                     suggestionController2.close();
+                    if (panelController.isPanelClosed) panelController.open();
                   } else if (state is LocationFetched) {
                     setState(() => textController2.text =
                         state.currentLocation.displayName);
@@ -445,13 +446,35 @@ class _AddressesScreenState extends State<AddressesScreen> {
                 onPressed: () {
                   if (pageController.page?.toInt() == 0) {
                     if (pickupFormKey.currentState!.validate()) {
-                      pageController.animateToPage(1,
-                          duration: Duration(milliseconds: 400),
-                          curve: Curves.easeInCubic);
+                      setState(() {
+                        pickupAddress = OrderAddress(
+                          position: mapCenterPostion,
+                          name: formBloc.pickupFormAddress.name,
+                          area: formBloc.pickupFormAddress.area,
+                          building: formBloc.pickupFormAddress.building,
+                          floor: formBloc.pickupFormAddress.floor,
+                          street: formBloc.pickupFormAddress.street,
+                          phoneNumber: formBloc.pickupFormAddress.phoneNumber,
+                          otherDetails: formBloc.pickupFormAddress.otherDetails,
+                        );
+                        isOnPickup = false;
+                      });
+                      pageController
+                          .animateToPage(1,
+                              duration: Duration(milliseconds: 400),
+                              curve: Curves.easeInCubic)
+                          .then((value) => _focus2.requestFocus());
+                      if (panelController.isPanelOpen) panelController.close();
                     } else {
                       if (panelController.isPanelClosed) panelController.open();
                     }
-                  } else {}
+                  } else {
+                    if (dropoffFormKey.currentState!.validate()) {
+                      
+                    } else {
+                      if (panelController.isPanelClosed) panelController.open();
+                    }
+                  }
                 },
                 backgroundColor: AppColors.BG_COLOR,
               ),
