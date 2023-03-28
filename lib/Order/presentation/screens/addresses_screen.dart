@@ -11,8 +11,8 @@ import 'package:moving_app/Shared/Location/data/repositories/location_repository
 import 'package:moving_app/Utils/constants.dart';
 import 'package:moving_app/Utils/services/service_locator.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
-
-import '../widgets/addresses_panel.dart';
+import '../widgets/address/addresses_panel.dart';
+import 'vehicle_select_screen.dart';
 
 class AddressesScreen extends StatefulWidget {
   const AddressesScreen({super.key});
@@ -57,7 +57,7 @@ class _AddressesScreenState extends State<AddressesScreen> {
     _fabHeight = _initFabHeight;
     super.initState();
     _focus1.addListener(() {
-      print("Focus: ${_focus1.hasFocus.toString()}");
+      print("Focus Node 1: ${_focus1.hasFocus.toString()}");
       // setState(() {});
     });
   }
@@ -470,7 +470,8 @@ class _AddressesScreenState extends State<AddressesScreen> {
                     }
                   } else {
                     if (dropoffFormKey.currentState!.validate()) {
-                      
+                      Navigator.of(context).push(MaterialPageRoute(
+                          builder: (_) => VehicleSelectScreen()));
                     } else {
                       if (panelController.isPanelClosed) panelController.open();
                     }
@@ -490,6 +491,7 @@ class _AddressesScreenState extends State<AddressesScreen> {
     googleMapController.dispose();
     pickupBloc.close();
     dropoffBloc.close();
+    formBloc.close();
     super.dispose();
   }
 }
