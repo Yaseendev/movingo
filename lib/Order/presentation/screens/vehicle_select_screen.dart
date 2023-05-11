@@ -2,9 +2,15 @@ import 'package:flutter/material.dart';
 
 import '../widgets/vehicle/vehicle_select_listview.dart';
 
-class VehicleSelectScreen extends StatelessWidget {
+class VehicleSelectScreen extends StatefulWidget {
   const VehicleSelectScreen({super.key});
 
+  @override
+  State<VehicleSelectScreen> createState() => _VehicleSelectScreenState();
+}
+
+class _VehicleSelectScreenState extends State<VehicleSelectScreen> {
+  int? selectedIndex;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -28,12 +34,18 @@ class VehicleSelectScreen extends StatelessWidget {
               ),
             ),
             Expanded(
-                child: VehicleSelectListView(),
-             ),
+              child: VehicleSelectListView(
+                onSelect: (index) {
+                  setState(() {
+                    selectedIndex = index;
+                  });
+                },
+              ),
+            ),
             SizedBox(
               width: MediaQuery.of(context).size.width,
               child: ElevatedButton(
-                  onPressed: () {},
+                  onPressed: selectedIndex == null ? null : () {},
                   style: ElevatedButton.styleFrom(
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(12),
