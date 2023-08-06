@@ -4,7 +4,6 @@ import 'package:intro_screen_onboarding_flutter/intro_app.dart';
 import 'package:moving_app/Primary/presentation/screens/primary_screen.dart';
 import 'package:moving_app/Settings/cubit/settings_cubit.dart';
 import 'package:moving_app/Utils/constants.dart';
-
 import 'splash_screen.dart';
 
 class OnboardingScreen extends StatelessWidget {
